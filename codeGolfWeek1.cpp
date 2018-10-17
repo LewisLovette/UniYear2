@@ -20,14 +20,12 @@ int main(){
     }
 
     //create matrix
-    vector<int, vector<char>> charMatrix;
+    vector<int, vector<string>> charMatrix;
     string line;
-    ofstream outFile("note_new.txt");
 
-    while( getline(matrix, line)){
-        outFile << line << endl;
-        istringstream iss(s);
-        for(std::string s; iss >> s; ) charMatrix[0].push_back(s);  //placeholder number for matrix
+    while(getline(matrix, line)){
+        istringstream iss(line);
+        for(string s; iss >> s;) charMatrix[0].push_back(s);  //placeholder number for matrix
     }
 
     matrix.close();
