@@ -49,7 +49,11 @@ bool queenInteract(vector<vector<int>> board, int x, int y){
 
 
 int main(){
+    //To do
+    //Step through, save positions in a pair list and after finished the step, change those positions
+    //instead of changing them as you step through
 
+    pair<int, int> healthToInfected, infectedToFaded;
     vector<vector<int>> board, boardCopy;
     bool temp = false;
 
