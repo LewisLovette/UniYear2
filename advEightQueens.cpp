@@ -8,7 +8,7 @@ bool queenInteract(vector<vector<int>> board, int x, int y){
     //if true, interaction has happened
 
     //Nasty method :)
-
+    cout << "Error Check 1" << endl;
     //horizontal    - this one is redundant
     for(int i = 0; i < 8; i++){
         if(board[x][i] == 1 and i != y) return true;
@@ -44,16 +44,13 @@ bool queenInteract(vector<vector<int>> board, int x, int y){
         if(board[xCopy][yCopy] == 1) return true;
     }
 
+    cout << "Error Check 2" << endl;
+
     return false;
 }
 
 
 int main(){
-    //To do
-    //Step through, save positions in a pair list and after finished the step, change those positions
-    //instead of changing them as you step through
-
-    pair<int, int> healthToInfected, infectedToFaded;
     vector<vector<int>> board, boardCopy;
     bool temp = false;
 
@@ -67,6 +64,7 @@ int main(){
     //placing queens
     for(int x = 0; x < 8; x++){
         boardCopy = board;
+        cout << "Error Check Begin" << endl;
         for(int y = 0; y < 8; y++){
             boardCopy[x][y] = 1;
             temp = queenInteract(boardCopy, x, y);
@@ -79,6 +77,8 @@ int main(){
             }
         }
     }
+    cout << "Error Check end" << endl;
+
 
     for(int x = 0; x < 8; x++){
         for(int y = 0; y < 8; y++) cout << board[x][y] << " ";
