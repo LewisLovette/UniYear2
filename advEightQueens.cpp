@@ -4,81 +4,82 @@
 using namespace std;
 
 //used to check across the 8 directions of a queen to see other queens
-bool queenInteract(vector<vector<int>> board, int x, int y){
+bool queenInteract(int board[8][8], int x, int y){
     //if true, interaction has happened
 
-    //Nasty method :)
-    cout << "Error Check 1" << endl;
-    //horizontal    - this one is redundant
+    int xC, yC;
+    cout << x << " " << y << endl << "TEST" << endl;
+    //verticle
     for(int i = 0; i < 8; i++){
-        if(board[x][i] == 1 and i != y) return true;
+        if(board[i][y] == 1) return true;
     }
-    //vertical      - can make this one redundant after too
+    cout << "TEST" << endl;
+    //horizontal
     for(int i = 0; i < 8; i++){
-        if(board[i][y] == 1 and i != x) return true;
+        if(board[x][i] == 1) return true;
     }
 
-    //diag up-left
-    for(int xCopy = x-1; xCopy < 8; xCopy++){
-        int yCopy = y-1;
-        if(xCopy < 0 or yCopy < 0) break;
-        if(board[xCopy][yCopy] == 1) return true;
+    cout << "TEST" << endl;
+    //up left
+    xC = x, yC = y; //xCopy, yCopy
+    while(xC >= 0 and yC >= 0){ //set to 8 as max possible moves
+        if(board[xC][yC] == 1) return true;
+        xC -= 1;
+        yC -= 1;
     }
-    //diag down-right
-    for(int xCopy = x+1; xCopy < 8; xCopy++){
-        int yCopy = y+1;
-        if(xCopy > 8 or yCopy > 8) break;
-        if(board[xCopy][yCopy] == 1) return true;
-    }
-
-    //diag up-right
-    for(int xCopy = x-1; xCopy < 8; xCopy++){
-        int yCopy = y+1;
-        if(xCopy < 0 or yCopy > 8) break;
-        if(board[xCopy][yCopy] == 1) return true;
-    }
-    //diag down-left
-    for(int xCopy = x+1; xCopy < 8; xCopy++){
-        int yCopy = y-1;
-        if(xCopy > 8 or yCopy < 0) break;
-        if(board[xCopy][yCopy] == 1) return true;
+    cout << "TEST" << endl;
+    //down right
+    xC = x, yC = y; //xCopy, yCopy
+    while(xC <= 7 and yC <= 7){ //set to 8 as max possible moves
+        if(board[xC][yC] == 1) return true;
+        xC += 1;
+        yC += 1;
     }
 
-    cout << "Error Check 2" << endl;
+    cout << "TEST" << endl;
+    //up right
+    xC = x, yC = y; //xCopy, yCopy
+    while(xC >= 0 and yC <= 7){ //set to 8 as max possible moves
+        if(board[xC][yC] == 1) return true;
+        xC -= 1;
+        yC += 1;
+    }
+    cout << "TEST" << endl;
+    //down left
+    xC = x, yC = y; //xCopy, yCopy
+    while(xC <= 7 and yC >= 0){ //set to 8 as max possible moves
+        if(board[xC][yC] == 1) return true;
+        xC += 1;
+        yC -= 1;
+    }
 
     return false;
 }
 
 
 int main(){
-    vector<vector<int>> board, boardCopy;
+    int board[8][8] = {0}; //initialize board positions to 0
+    //board[0][0] = 1;
+    //vector<int> columnFull;
     bool temp = false;
 
-    //initialize board positions to 0
-    for(int i = 0; i < 8; i++){
-        for(int x = 0; x < 8; x++){
-            board[i][x] = 0;  
-        }
-    }
-
     //placing queens
-    for(int x = 0; x < 8; x++){
-        boardCopy = board;
-        cout << "Error Check Begin" << endl;
-        for(int y = 0; y < 8; y++){
-            boardCopy[x][y] = 1;
-            temp = queenInteract(boardCopy, x, y);
-            if(temp = false){   //if no interaction then place queen and move to next line
-                board = boardCopy;
-                break;
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            //if(find(columnFUll.begin(), columnFull.end(), y) != columnFull.end()) continue;   //this column has a queen in it
+            temp = queenInteract(board, i, j);
+            if(temp == false){   //if no interaction then place queen and move to next line
+                board[i][j] = 1;
+                //columnFull.push_back(y);  //column has a queen in it
+                //break; //as can't do more on this row
             }
-            else{   //else set position to 0 and try next
-                boardCopy[x][y] = 0;
+            for(int x = 0; x < 8; x++){
+                for(int y = 0; y < 8; y++) cout << board[x][y] << " ";
+                cout << endl;
             }
+            cout << endl;
         }
     }
-    cout << "Error Check end" << endl;
-
 
     for(int x = 0; x < 8; x++){
         for(int y = 0; y < 8; y++) cout << board[x][y] << " ";
