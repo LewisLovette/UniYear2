@@ -3,23 +3,25 @@
 
 using namespace std;
 
+
+int x[8] = {0};
+
+
 //used to check across the 8 directions of a queen to see other queens
 bool queenInteract(int board[8][8], int x, int y){
     //if true, interaction has happened
 
     int xC, yC;
-    cout << x << " " << y << endl << "TEST" << endl;
+
     //verticle
     for(int i = 0; i < 8; i++){
         if(board[i][y] == 1) return true;
     }
-    cout << "TEST" << endl;
     //horizontal
     for(int i = 0; i < 8; i++){
         if(board[x][i] == 1) return true;
     }
 
-    cout << "TEST" << endl;
     //up left
     xC = x, yC = y; //xCopy, yCopy
     while(xC >= 0 and yC >= 0){ //set to 8 as max possible moves
@@ -27,7 +29,6 @@ bool queenInteract(int board[8][8], int x, int y){
         xC -= 1;
         yC -= 1;
     }
-    cout << "TEST" << endl;
     //down right
     xC = x, yC = y; //xCopy, yCopy
     while(xC <= 7 and yC <= 7){ //set to 8 as max possible moves
@@ -36,7 +37,6 @@ bool queenInteract(int board[8][8], int x, int y){
         yC += 1;
     }
 
-    cout << "TEST" << endl;
     //up right
     xC = x, yC = y; //xCopy, yCopy
     while(xC >= 0 and yC <= 7){ //set to 8 as max possible moves
@@ -44,7 +44,6 @@ bool queenInteract(int board[8][8], int x, int y){
         xC -= 1;
         yC += 1;
     }
-    cout << "TEST" << endl;
     //down left
     xC = x, yC = y; //xCopy, yCopy
     while(xC <= 7 and yC >= 0){ //set to 8 as max possible moves
@@ -56,6 +55,13 @@ bool queenInteract(int board[8][8], int x, int y){
     return false;
 }
 
+void backTracker(int k, int n){
+    for(int i = 0; i < n; i++){
+        if(!queenInteract(k, i)){
+
+        }
+    }
+}
 
 int main(){
     int board[8][8] = {0}; //initialize board positions to 0
