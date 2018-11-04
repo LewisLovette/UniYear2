@@ -4,8 +4,6 @@
 using namespace std;
 
 
-int x[8] = {0};
-
 
 //used to check across the 8 directions of a queen to see other queens
 bool queenInteract(int board[8][8], int x, int y){
@@ -53,14 +51,6 @@ bool queenInteract(int board[8][8], int x, int y){
     }
 
     return false;
-}
-
-void backTracker(int k, int n){
-    for(int i = 0; i < n; i++){
-        if(!queenInteract(k, i)){
-
-        }
-    }
 }
 
 int main(){
