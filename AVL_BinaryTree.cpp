@@ -37,8 +37,10 @@ BinaryTree* insertNode(BinaryTree* node, int value){
 //Deleting a value from the node - means we need to search for that value and then..
 BinaryTree* deleteNode(BinaryTree* node, int value){
 
-}
 
+
+    return node;
+}
 
 int main(){
 
