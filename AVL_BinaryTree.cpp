@@ -1,4 +1,6 @@
 #include<bits/stdc++.h>
+#include<iostream>
+
 using namespace std;
 
 class BinaryTree{
@@ -16,6 +18,10 @@ class BinaryTree{
 
 //Recursive, if left or right child isn't empty, call itself one place down each time until there's a free space
 BinaryTree* insertNode(BinaryTree* node, int value){
+    
+    if(node == NULL){
+        node = new BinaryTree(value);
+    }
     if(value > node->value){
         if(node->right == NULL){
             node->right = new BinaryTree(value);
@@ -32,27 +38,57 @@ BinaryTree* insertNode(BinaryTree* node, int value){
             insertNode(node->left, value);
         }
     }
+    return node;
 }
 
 //Deleting a value from the node - means we need to search for that value and then..
 BinaryTree* deleteNode(BinaryTree* node, int value){ 
-    //Note, should be reversed as needs to check if there are children from most to least children.
+    //Set node to the parent of the node to be removed
+    node = binaryTreeFindParent(node, value);
+    int children = (node->left->value == value) ? countChildren(node->left) : countChildren(node->right);
+    
+
 
     return node;
 }
 
-BinaryTree* binaryTreeFindParent(BinaryTree* node, int value){
+int countChildren(BinaryTree* node){
+    int numOfChildren = 0;
 
-    if(node->left->value == value or node->right->value == value){
+    if(node->left != NULL) numOfChildren++;
+    if(node->right != NULL) numOfChildren++;
+
+    return numOfChildren
+}
+
+BinaryTree* binaryTreeFindParent(BinaryTree* node, int value){
+    if(node->value == value or node == 0){
+        cout << node->value << endl;
         return node;
     }
-    else if(value < node->value){
+
+    //Checks children, if child has the target then it returns the parent of the child.
+    if(node->left != NULL){
+        if(node->left->value == value){
+            cout << "left child " << node->left->value << endl;
+            return node;
+        }
+    }
+    if(node->right != NULL){
+        if(node->right->value == value){
+            cout << "right child " << node->right->value << endl;
+            return node;
+        }
+    }
+
+    if(value < node->value){
         return binaryTreeFindParent(node->left, value);
     }
     else{
         return binaryTreeFindParent(node->right, value);
     }
 
+    cout << node->value << endl;
     return node;
 }
 
@@ -84,7 +120,9 @@ int main(){
 	insertNode(t, 3);
 	insertNode(t, 4);
 	insertNode(t, 11);
-	in_order(t);
+    in_order(t);
+
+    binaryTreeFindParent(t, 11);
 
 	return 0;
 }
