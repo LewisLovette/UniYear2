@@ -41,26 +41,6 @@ BinaryTree* insertNode(BinaryTree* node, int value){
     return node;
 }
 
-//Deleting a value from the node - means we need to search for that value and then..
-BinaryTree* deleteNode(BinaryTree* node, int value){ 
-    //Set node to the parent of the node to be removed
-    node = binaryTreeFindParent(node, value);
-    int children = (node->left->value == value) ? countChildren(node->left) : countChildren(node->right);
-    
-
-
-    return node;
-}
-
-int countChildren(BinaryTree* node){
-    int numOfChildren = 0;
-
-    if(node->left != NULL) numOfChildren++;
-    if(node->right != NULL) numOfChildren++;
-
-    return numOfChildren
-}
-
 BinaryTree* binaryTreeFindParent(BinaryTree* node, int value){
     if(node->value == value or node == 0){
         cout << node->value << endl;
@@ -92,6 +72,49 @@ BinaryTree* binaryTreeFindParent(BinaryTree* node, int value){
     return node;
 }
 
+int countChildren(BinaryTree* node){
+    int numOfChildren = 0;
+
+    if(node->left != NULL) numOfChildren++;
+    if(node->right != NULL) numOfChildren++;
+
+    return numOfChildren;
+}
+
+//Deleting a value from the node - means we need to search for that value and then..
+BinaryTree* deleteNode(BinaryTree* node, int value){ 
+    //Set node to the parent of the node to be removed
+    bool left = true;
+    if(node->left->value != value) left = false;    //right child has the value;
+
+    node = binaryTreeFindParent(node, value);
+    int children = 0;
+
+    if(left == true){
+        countChildren(node->left);
+    }
+    else{
+        countChildren(node->right);
+    }
+    
+    if(children == 0){  //leaf, just remove the leaf
+        (left == true) ? node->left = NULL : node->right = NULL;
+    }
+    else if(children == 1){ //branch, place parent equal to the branches child
+        if(left == true){
+            (node->left->left != NULL) ? node->left = node->left->left : node->left = node->left->right;
+        }
+        else{
+            (node->right->right != NULL) ? node->right = node->right->right : node->right = node->right->left;
+        }
+    }
+    else{
+        
+    }
+
+    return node;
+}
+
 //Taken from CUMOODLE - START
 void postorder(BinaryTree* tree) {
 	if (tree->left != NULL)
@@ -99,7 +122,6 @@ void postorder(BinaryTree* tree) {
 	if (tree->right != NULL)
 		postorder(tree->right);
 	cout << tree->value << endl;
-
 }
 
 void in_order(BinaryTree* tree) {
@@ -122,7 +144,10 @@ int main(){
 	insertNode(t, 11);
     in_order(t);
 
-    binaryTreeFindParent(t, 11);
+    //binaryTreeFindParent(t, 11);
+    
+    deleteNode(t, 10);
+    in_order(t);
 
 	return 0;
 }
