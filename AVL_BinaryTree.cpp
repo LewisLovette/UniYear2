@@ -35,19 +35,23 @@ BinaryTree* insertNode(BinaryTree* node, int value){
 }
 
 //Deleting a value from the node - means we need to search for that value and then..
-BinaryTree* deleteNode(BinaryTree* node, int value){
-    
+BinaryTree* deleteNode(BinaryTree* node, int value){ 
     //Note, should be reversed as needs to check if there are children from most to least children.
 
-    //case 1, no children - just remove;
-    if(node->left and node->right == NULL){
-        node->value = NULL;
-    }
-    else if(node->right != NULL){  //has child to the right
-        node->value = node->right->value;
-        node->right = NULL;
-    }
+    return node;
+}
 
+BinaryTree* binaryTreeFindParent(BinaryTree* node, int value){
+
+    if(node->left->value == value or node->right->value == value){
+        return node;
+    }
+    else if(value < node->value){
+        return binaryTreeFindParent(node->left, value);
+    }
+    else{
+        return binaryTreeFindParent(node->right, value);
+    }
 
     return node;
 }
@@ -58,14 +62,14 @@ void postorder(BinaryTree* tree) {
 		postorder(tree->left);
 	if (tree->right != NULL)
 		postorder(tree->right);
-	cout << tree->value << std::endl;
+	cout << tree->value << endl;
 
 }
 
 void in_order(BinaryTree* tree) {
 	if (tree->left != NULL)
 		in_order(tree->left);
-	cout << tree->value << std::endl;
+	cout << tree->value << endl;
 	if (tree->right != NULL)
 		in_order(tree->right);
 }
@@ -81,5 +85,6 @@ int main(){
 	insertNode(t, 4);
 	insertNode(t, 11);
 	in_order(t);
+
 	return 0;
 }
