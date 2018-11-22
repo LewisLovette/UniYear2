@@ -86,7 +86,7 @@ BinaryTree* deleteNode(BinaryTree* node, int value){
     //Set node to the parent of the node to be removed
     bool left = true;
     if(node->left->value != value) left = false;    //right child has the value;
-
+    
     node = binaryTreeFindParent(node, value);
     int children = 0;
 
