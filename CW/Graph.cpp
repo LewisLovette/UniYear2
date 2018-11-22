@@ -70,6 +70,7 @@ class Graph{
         void depthFS(int);
         void breadthFS(int);
         void isPath(int, int);
+        void isConnected(int);
 };
 
 void Graph::depthFS(int start){
@@ -127,27 +128,95 @@ void Graph::breadthFS(int start){
 }
 
 void Graph::isPath(int start, int end){
+    int startCopy = start;
     queue<int> toVisit;
     bool visited[nodes.size()];
     for(int i = 0; i < nodes.size(); i++) visited[i] = false;   //setting visisted to false
 
+    //keep track of the position we visited from - index is node, value is from.
+    int visitedFrom[nodes.size()];
+    for(int i = 0; i < nodes.size(); i++) visitedFrom[i] = -1;  //set to -1 means we haven't visited from anywhere
+
     toVisit.push(start);
 
-    cout << "Breadth First Search: ";
     while(!toVisit.empty()){
-        //cout << "while loop test" << endl;
         start = toVisit.front();
         toVisit.pop();
         
         if(!visited[start]){    //if false then we haven't visited
-            cout << start << " ";   //cout as this is the order we visited
             visited[start] = true;  //so set it to true
         }
 
         for(int i = 0; i < nodes[start]->edges.size(); i++){
             //cout << "size test" << endl;
             //if the edge to the current node isn't visited then add to 'toVisit'
-            if(!visited[nodes[start]->edges[i]->value]) toVisit.push(nodes[start]->edges[i]->value);
+            if(!visited[nodes[start]->edges[i]->value]){
+                toVisit.push(nodes[start]->edges[i]->value);
+                //add start to the new edges - to keep track of where the search came from
+                visitedFrom[nodes[start]->edges[i]->value] = start;
+            }
+        }
+
+        if(start == end) break;
+    }
+    
+    //Printing the path if there is one
+    cout << "Is Path from " << startCopy << " to " << end << " ? ";
+    if(visitedFrom[end] != -1){
+        cout << "YES " << endl << end << " "; //printing 
+
+        for(int i = end; visitedFrom[end] != -1; i++){
+            cout << visitedFrom[end] << " ";
+            end = visitedFrom[end];
+        }
+    }
+    else{
+        cout << "NO";
+    }
+    cout << endl;
+}
+
+void Graph::isConnected(int start){
+    int startCopy = start;
+    queue<int> toVisit;
+    bool visited[nodes.size()];
+    for(int i = 0; i < nodes.size(); i++) visited[i] = false;   //setting visisted to false
+
+    //keep track of the position we visited from - index is node, value is from.
+    int visitedFrom[nodes.size()];
+    for(int i = 0; i < nodes.size(); i++) visitedFrom[i] = -1;  //set to -1 means we haven't visited from anywhere
+
+    toVisit.push(start);
+
+    while(!toVisit.empty()){
+        start = toVisit.front();
+        toVisit.pop();
+        
+        if(!visited[start]){    //if false then we haven't visited
+            visited[start] = true;  //so set it to true
+        }
+
+        for(int i = 0; i < nodes[start]->edges.size(); i++){
+            //cout << "size test" << endl;
+            //if the edge to the current node isn't visited then add to 'toVisit'
+            if(!visited[nodes[start]->edges[i]->value]){
+                toVisit.push(nodes[start]->edges[i]->value);
+                //add start to the new edges - to keep track of where the search came from
+                visitedFrom[nodes[start]->edges[i]->value] = start;
+            }
+        }
+
+    }
+    
+    //Printing the path if there is one
+    cout << "Is the graph Strongly Connected? ";
+    for(int i = 0; i < nodes.size(); i++){
+        if(visitedFrom[i] == -1 and i != startCopy){
+            cout << "NO";
+            break;
+        }
+        if(i == nodes.size()-1){
+            cout << "YES";
         }
     }
     cout << endl;
@@ -167,12 +236,16 @@ int main(){
     graph.addEdge(2, 0);
     graph.addEdge(2, 3);
     graph.addEdge(2, 5);
+    //testing isConnected();
+    //graph.addEdge(5, 4);  //makes the graph strongly connected
 
     graph.printGraph();
 
     graph.depthFS(0);
     graph.breadthFS(0);
-    //graph.breadthFS(2);
+    
+    graph.isPath(0, 3);
+    graph.isConnected(0);
 
     return 0;
 }
