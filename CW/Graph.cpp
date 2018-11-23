@@ -9,7 +9,8 @@ class Node{
         int value;
         bool visited = false;
         vector<Node*> edges;
-    
+        vector<int> weight; //position of edge gives weight here
+
     Node(int value){
         this->value = value;
     }
@@ -31,16 +32,27 @@ class Graph{
         vector<Node*> nodes;
 
         Graph(){
-            
+
         }
 
-        void addNode(){
-            Node* temp = new Node(numOfNodes);  //num of nodes is the value, easy to keep track of
-            nodes.push_back(temp);
-            numOfNodes++;
-        }
+        void addNode();
+        void addEdge(int, int, int);    //node1, node2, weight
+        void printGraph();
+        void depthFS(int);
+        void breadthFS(int);
+        void isPath(int, int);
+        void isConnected(int);
+        void Dijkstra(int, int);
 
-        void addEdge(int node1, int node2){
+};
+
+void Graph::addNode(){
+    Node* temp = new Node(numOfNodes);  //num of nodes is the value, easy to keep track of
+    nodes.push_back(temp);
+    numOfNodes++;
+}
+
+void Graph::addEdge(int node1, int node2, int weight){
             int size = nodes.size();
             if(node1 > size-1 or node2 > size-1){
                 if(node1 > node2){
@@ -50,11 +62,17 @@ class Graph{
                     for(int i = size-1; i < node2; i++) addNode();
                 }
             }
+            //adding to edge vector
             nodes[node1]->edges.push_back(nodes[node2]); //pushing to the list within the node
             nodes[node2]->edges.push_back(nodes[node1]); //as undirected have to do for both nodes
+
+            //adding weight to same position
+            nodes[node1]->weight.push_back(weight); //pushing to the list within the node
+            nodes[node2]->weight.push_back(weight); //as undirected have to do for both nodes
+
         }
 
-        void printGraph(){
+void Graph::printGraph(){
             int count, size;
             
             for(int i = 0; i < nodes.size(); i++){
@@ -66,12 +84,6 @@ class Graph{
                 cout << endl;
             }
         }
-
-        void depthFS(int);
-        void breadthFS(int);
-        void isPath(int, int);
-        void isConnected(int);
-};
 
 void Graph::depthFS(int start){
     vector<int> toVisit;
@@ -163,7 +175,7 @@ void Graph::isPath(int start, int end){
     //Printing the path if there is one
     cout << "Is Path from " << startCopy << " to " << end << " ? ";
     if(visitedFrom[end] != -1){
-        cout << "YES " << endl << end << " "; //printing 
+        cout << "YES: " << end << " "; //printing 
 
         for(int i = end; visitedFrom[end] != -1; i++){
             cout << visitedFrom[end] << " ";
@@ -222,6 +234,89 @@ void Graph::isConnected(int start){
     cout << endl;
 }
 
+void Graph::Dijkstra(int start, int end){
+    int smallestDist, track, alt, endCopy = end;
+    Node* currentNode;
+    vector<int> dist;
+    int previous[nodes.size()];
+    bool distVisited[nodes.size()];
+
+    //cout << "Test 1" << endl;
+
+    for(int i = 0; i < nodes.size(); i++){
+        dist.push_back(INT_MAX);  //set all distances to infinity.
+        distVisited[i] = false;
+    }
+    dist[start] = 0;    //as the node from itself to itself is 0
+    
+    vector<Node*> queue = nodes;    //copy of nodes
+    
+    //cout << "Test 1.5" << endl;
+
+    while(!queue.empty()){
+        //cout << "Test 2" << endl;
+        smallestDist = INT_MAX;   //set to front so we can search for the smallest node
+        /*
+        for(int i = 0; i < queue.size(); i++) cout << dist[queue[i]->value] << " ";
+        cout << endl;
+        */
+        for(int i = 0; i < queue.size(); i++){
+            if(dist[queue[i]->value] < smallestDist and distVisited[queue[i]->value] != true){ //find smallest distance from correlating node
+                smallestDist = dist[queue[i]->value];
+                track = i;
+                //track = queue[i]->value;
+            }
+        }
+
+        currentNode = queue[track];
+        /*
+        cout << "Track: " << track << endl;
+        cout << "Current Node: " << currentNode->value << endl;
+        */
+        distVisited[currentNode->value] = true;  //keeping track of nodes we've visited
+        /*
+        cout << "Queue: ";
+        for(int i = 0; i < queue.size(); i++) cout << queue[i]->value << " ";
+        cout << endl;
+
+        cout << "DistList: ";
+        for(int i = 0; i < nodes.size(); i++) cout << dist[i] << " ";
+        cout << endl;
+        */
+        queue.erase(queue.begin()+track);
+
+        //cout << "Test 2.5" << endl;
+
+        for(int i = 0; i < currentNode->edges.size(); i++){ //stepping through neighbour nodes
+            //cout << "Test 3" << endl;
+            alt = dist[currentNode->value] + currentNode->weight[i];
+
+            if(alt < dist[currentNode->edges[i]->value]){   //if alt is less than the position of the neighbour.
+                dist[currentNode->edges[i]->value] = alt;
+                previous[currentNode->edges[i]->value] = currentNode->value;
+            }
+        }
+    }
+
+    //Printing path and weight
+    cout << "Djisktra: " << end << " ";
+    for(int i = end; previous[endCopy] != start; i++){
+        cout << previous[endCopy] << " ";
+        endCopy = previous[endCopy];
+    }
+    cout << start << endl;
+    cout << "Weight = " << dist[end] << endl;
+
+    //Printing all
+    for(int i = 0; i < nodes.size(); i++){
+        cout << "Node: " << i << "  Prev: " << previous[i] << "  Visited: "; 
+        cout << distVisited[i] << "  Weight: " << dist[i] << endl;
+    }
+
+}
+
+
+
 int main(){
 
     Graph graph;
@@ -230,12 +325,24 @@ int main(){
     graph.addNode();
     graph.addNode();
     graph.addNode();
+    graph.addNode();
+    graph.addNode();
+    graph.addNode();
+    graph.addNode();
+    graph.addNode();    //9 nodes
 
-    graph.addEdge(0, 1);
-    graph.addEdge(1, 2);
-    graph.addEdge(2, 0);
-    graph.addEdge(2, 3);
-    graph.addEdge(2, 5);
+    graph.addEdge(0, 2, 10);
+    graph.addEdge(0, 1, 20);
+    graph.addEdge(1, 3, 10);
+    graph.addEdge(2, 4, 20);
+    graph.addEdge(4, 6, 20);
+    graph.addEdge(3, 5, 30);
+    graph.addEdge(3, 7, 30);
+    graph.addEdge(7, 8, 20);
+    graph.addEdge(5, 6, 0);
+    graph.addEdge(5, 8, 10);
+    graph.addEdge(6, 8, 20);
+
     //testing isConnected();
     //graph.addEdge(5, 4);  //makes the graph strongly connected
 
@@ -246,6 +353,17 @@ int main(){
     
     graph.isPath(0, 3);
     graph.isConnected(0);
+    
+    //graph.Dijkstra(4, 8);
+
+    int temp, temp2;
+    while(true){
+        cin >> temp;
+        cin >> temp2;
+        graph.Dijkstra(temp, temp2);
+        cout << endl;
+    }
+    
 
     return 0;
 }
